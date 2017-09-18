@@ -9,9 +9,6 @@ addons:
 before_install:
   - $SHELL --version 2> /dev/null || dpkg -s $SHELL 2> /dev/null || which $SHELL
 
-install:
-  cabal update && cabal install ShellCheck && shellcheck --version
-
 script:
   shellcheck -s $SHELL scripts/publi.sh
 
