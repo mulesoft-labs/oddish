@@ -1,4 +1,13 @@
-language: node_js
+language: generic
+dist: trusty
+sudo: required
+addons:
+  apt:
+    packages:
+      - cabal-install
+      - ghc
+      - zsh
+
 node_js:
 - '8'
 
