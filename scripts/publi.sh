@@ -58,7 +58,7 @@ else
 
     set -e # Break the script if it fails
 
-    if [[ "${TAG}" == "latest" ]]; then
+    if [ "${TAG}" = "latest" ]; then
       npm publish
     else
       npm publish "--tag=$TAG"
