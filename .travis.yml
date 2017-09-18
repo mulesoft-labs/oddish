@@ -1,0 +1,23 @@
+language: bash
+addons:
+  apt:
+    sources:
+    - debian-sid    # Grab ShellCheck from the Debian repo
+    packages:
+    - shellcheck
+
+before_install:
+  - $SHELL --version 2> /dev/null || dpkg -s $SHELL 2> /dev/null || which $SHELL
+
+script:
+  shellcheck -s $SHELL scripts/publi.sh
+
+env:
+  global:
+    - CXX=g++-4.8
+    - CC=gcc-4.8
+    - PATH="~/.cabal/bin/:$(echo $PATH | sed 's/::/:/')"
+  matrix:
+    - SHELL=bash
+    - SHELL=dash
+    - SHELL=sh
