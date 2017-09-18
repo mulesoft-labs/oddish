@@ -1,10 +1,10 @@
-# Oddish
+# Oddish [![Build Status](https://travis-ci.org/mulesoft-labs/oddish.svg)](https://travis-ci.org/mulesoft-labs/oddish)
 
 * `npm i --save-dev oddish@latest`
 * add a script to your package.json that run oddish
   ```json
-  scripts:{
-    ...scripts,
+  scripts: {
+    // ...scripts,
     "release": "oddish"
   }
   ```
@@ -14,7 +14,7 @@
 
 ## .travis.yml
 
-For a better integration we recommend to add it to your travis build as follows: 
+For a better integration we recommend to add it to your travis build as follows:
 
 ```yml
 language: node_js
