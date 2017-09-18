@@ -1,5 +1,7 @@
 # Oddish
 
+## usage
+
 * `npm i --save-dev oddish@latest`
 * add a script to your package.json that run oddish
   ```json
@@ -31,3 +33,13 @@ script:
 after_success:
 - npm run release
 ```
+
+## Local usage
+
+* `npm i -g oddish@latest`
+* `oddish` from project root 
+
+## How it works
+
+oddish will take your branch name and depending on it will create a tag, `develop` and `master` are being mapped to `next` and `latest` respectively. The version will be incremented by `prerelease` from latest version associated with that tag and publish this to NPM. If there is no version associated with the tag, the version of your package.json will be taken as base. 
+
