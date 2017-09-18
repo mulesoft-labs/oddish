@@ -6,7 +6,6 @@ addons:
     packages:
       - cabal-install
       - ghc
-      - zsh
 
 node_js:
 - '8'
@@ -29,5 +28,3 @@ env:
     - SHELL=bash
     - SHELL=dash
     - SHELL=sh
-    - SHELL=zsh
-    - SHELL=ksh

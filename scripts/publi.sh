@@ -19,9 +19,9 @@ fi
 echo "branch=${GIT_BRANCH}"
 
 export TAG="latest"
-if [[ "${GIT_BRANCH}" == "master" ]]; then
+if [ "${GIT_BRANCH}" = "master" ]; then
   TAG="latest"
-elif [[ "${GIT_BRANCH}" == "develop" ]]; then
+elif [ "${GIT_BRANCH}" = "develop" ]; then
   TAG="next"
 else
   TAG=${GIT_BRANCH}
@@ -33,11 +33,11 @@ export LATEST_VERSION
 LATEST_VERSION=$(npm v . "dist-tags.$TAG")
 echo "latest version=$LATEST_VERSION"
 
-if [[ "$LATEST_VERSION" == "undefined" ]]; then
+if [ "$LATEST_VERSION" = "undefined" ]; then
   LATEST_VERSION="$DEFAULT_BASE_VERSION-$GIT_BRANCH"
 fi
 
-if [[ "$LATEST_VERSION" == "" ]]; then
+if [ "$LATEST_VERSION" = "" ]; then
   LATEST_VERSION="$DEFAULT_BASE_VERSION-$GIT_BRANCH"
 fi
 
