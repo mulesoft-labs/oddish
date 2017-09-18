@@ -10,7 +10,11 @@ fi
 echo "pwd=$(pwd)"
 
 export GIT_BRANCH
-GIT_BRANCH=$(git branch | grep "\*" | cut -d ' ' -f2)
+${GIT_BRANCH:=$BRANCH_NAME} # Jenkins
+${GIT_BRANCH:=$TRAVIS_BRANCH} # Travis
+if [ -z "${GIT_BRANCH}" ]; then
+  GIT_BRANCH=$(git symbolic-ref --short HEAD)
+fi
 
 echo "branch=${GIT_BRANCH}"
 

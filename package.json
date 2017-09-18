@@ -1,6 +1,6 @@
 {
   "name": "oddish",
-  "version": "1.0.0-latest.4",
+  "version": "1.0.1",
   "description": "scripts that make your life easier",
   "bin": {
     "oddish": "./scripts/publi.sh"
