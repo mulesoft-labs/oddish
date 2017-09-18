@@ -10,7 +10,7 @@ fi
 echo "pwd=$(pwd)"
 
 export GIT_BRANCH
-GIT_BRANCH=$(git symbolic-ref --short HEAD)
+GIT_BRANCH=$(git branch | grep "\*" | cut -d ' ' -f2)
 
 echo "branch=${GIT_BRANCH}"
 
