@@ -33,15 +33,14 @@ if [ "$LATEST_VERSION" = "undefined" ]; then
 elif [ "$LATEST_VERSION" = "" ]; then
   LATEST_VERSION="$DEFAULT_BASE_VERSION-$GIT_BRANCH"
 fi
-
 echo "base version=$LATEST_VERSION"
 
+export NEW_VERSION
 npm version "${LATEST_VERSION}" --force --no-git-tag-version 2> /dev/null 1> /dev/null
-export NEW_VERSION=$(npm version prerelease --force --no-git-tag-version 2> /dev/null)
+NEW_VERSION=$(npm version prerelease --force --no-git-tag-version 2> /dev/null)
 echo "publishing branch ${GIT_BRANCH} with version ${NEW_VERSION}"
 
 set -e # Break the script if it fails
-
 if [ "${TAG}" = "latest" ]; then
   npm publish
 else
