@@ -61,9 +61,9 @@ const run = async () => {
   console.log(`Publishing branch ${branch} with version ${newVersion}`);
 
   if (tag === 'latest' || !tag) {
-    execute('npm publish');
+    await execute('npm publish');
   } else {
-    execute(`npm publish --tag=${tag}`);
+    await execute(`npm publish --tag=${tag}`);
   }
 } 
 
