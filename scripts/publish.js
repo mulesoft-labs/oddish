@@ -54,17 +54,32 @@ const run = async () => {
 
   console.log(`Using version ${latestVersion}`);
 
-  await execute( `npm version ${latestVersion} --force --no-git-tag-version 2> /dev/null 1> /dev/null` );
+  try {
+    await execute( `npm version ${latestVersion} --force --no-git-tag-version 2> /dev/null 1> /dev/null` );
+  } catch (e) {
+    console.error('Failed to set latestVersion', e);
+    process.exit(1);
+  }
 
-  newVersion = await execute(`npm version prerelease --force --no-git-tag-version 2> /dev/null`);
+  try {
+    newVersion = await execute(`npm version prerelease --force --no-git-tag-version 2> /dev/null`);
+  } catch (e) {
+    console.error('Failed to bump prerelease', e);
+    process.exit(1);
+  }
 
   console.log(`Publishing branch ${branch} with version ${newVersion}`);
 
-  if (tag === 'latest' || !tag) {
-    await execute('npm publish');
-  } else {
-    await execute(`npm publish --tag=${tag}`);
+  try {
+    if (tag === 'latest' || !tag) {
+      await execute('npm publish');
+    } else {
+      await execute(`npm publish --tag=${tag}`);
+    }
+  } catch (e) {
+    console.error('Failed to publish', e);
+    process.exit(1);
   }
-} 
+}
 
 run();
