@@ -1,11 +1,12 @@
 {
   "name": "oddish",
-  "version": "1.0.2-1",
+  "version": "1.0.2-3",
   "description": "scripts that make your life easier",
   "bin": {
-    "oddish": "./scripts/publi.sh"
+    "oddish": "./scripts/publish.js"
   },
   "scripts": {
+    "release": "node ./scripts/publish.js",
     "test": "echo 'PROFIT!!!'"
   },
   "repository": {

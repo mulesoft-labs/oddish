@@ -1,16 +1,16 @@
-language: bash
+language: node_js
+node_js:
+- 8
 addons:
   apt:
     sources:
     - debian-sid    # Grab ShellCheck from the Debian repo
-    packages:
-    - shellcheck
 
 before_install:
   - $SHELL --version 2> /dev/null || dpkg -s $SHELL 2> /dev/null || which $SHELL
 
 script:
-  shellcheck -s $SHELL scripts/publi.sh
+  npm run release
 
 env:
   global:
