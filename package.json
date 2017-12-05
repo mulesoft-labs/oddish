@@ -1,11 +1,12 @@
 {
   "name": "oddish",
-  "version": "1.0.2-1",
+  "version": "1.0.2-99702f4",
   "description": "scripts that make your life easier",
   "bin": {
     "oddish": "./scripts/publish.js"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "release": "node ./scripts/publish.js",
     "test": "echo 'PROFIT!!!'"
   },
@@ -21,5 +22,14 @@
   "bugs": {
     "url": "https://github.com/mulesoft-labs/oddish/issues"
   },
-  "homepage": "https://github.com/mulesoft-labs/oddish#readme"
+  "homepage": "https://github.com/mulesoft-labs/oddish#readme",
+  "dependencies": {
+    "git-rev-sync": "^1.9.1",
+    "semver": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.54",
+    "@types/semver": "^5.4.0",
+    "typescript": "^2.6.2"
+  }
 }

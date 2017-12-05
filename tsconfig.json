@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es2017",
+      "diagnostics": true,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "inlineSourceMap": true,
+      "inlineSources": true,
+      "moduleResolution": "node",
+      "forceConsistentCasingInFileNames": true
+    },
+    "exclude": [
+      "typings/browser.d.ts",
+      "typings/browser",
+      "node_modules",
+      "!node_modules/@types",
+      "test"
+    ]
+  }
