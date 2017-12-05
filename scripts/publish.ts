@@ -119,7 +119,7 @@ const run = async () => {
 
   try {
     const repoName = (await execute('npm v . name')).trim();
-    const extraTag = 'latest-' + (await getVersion());
+    const extraTag = (npmTag ? 'latest-' : 'stable-') + (await getVersion());
     console.log(`Add dist tag ${extraTag} -> ${repoName}@${newVersion}`);
     await execute(`npm dist-tag add ${repoName}@${newVersion} ${extraTag}`);
   } catch (e) {
