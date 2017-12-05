@@ -48,10 +48,11 @@ async function publish(npmTag: string = null): Promise<string> {
 }
 
 import fs = require("fs");
-import path = require("path");
 
 async function getVersion() {
-  const pkgJsonVersion = await execute("npm view . version");
+  const json = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+
+  const pkgJsonVersion = json.version;
 
   const version = semver.parse(pkgJsonVersion.trim());
 
@@ -107,7 +108,7 @@ const run = async () => {
 
   console.log(
     `Publishing branch ${branch} with version=${newVersion} and tag=${npmTag ||
-      "<empty tag>"}`
+    "<empty tag>"}`
   );
 
   await publish(npmTag);
