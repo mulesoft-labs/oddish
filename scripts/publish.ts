@@ -108,15 +108,24 @@ const run = async () => {
 
   console.log(`Publishing branch ${branch} with version=${newVersion} and tag=${npmTag || "<empty tag>"}`);
 
-  const extraTag = 'v' + (await getVersion());
-
-  console.log(`Extra tag=${extraTag}`);
-
   await setVersion(newVersion);
 
 
+  if (npmTag) {
+    await publish([npmTag]);
+  } else {
+    await publish();
+  }
 
-  await publish([npmTag, extraTag]);
+  try {
+    const repoName = (await execute('npm v . name')).trim();
+    const extraTag = 'latest-' + (await getVersion());
+    console.log(`Add dist tag ${extraTag} -> ${repoName}@${newVersion}`);
+    await execute(`npm dist-tag add ${repoName}@${newVersion} ${extraTag}`);
+  } catch (e) {
+    console.error('Error setting extra npm dist-tag');
+    console.error(e);
+  }
 };
 
 run().catch(e => {
