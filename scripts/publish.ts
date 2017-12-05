@@ -39,12 +39,8 @@ async function setVersion(newVersion: string): Promise<string> {
   );
 }
 
-async function publish(npmTag: string = null): Promise<string> {
-  if (!npmTag) {
-    return await execute(`npm publish`);
-  } else {
-    return await execute(`npm publish --tag=${npmTag}`);
-  }
+async function publish(npmTag: string[] = []): Promise<string> {
+  return await execute(`npm publish` + npmTag.map($ => ' --tag=' + $).join(''));
 }
 
 import fs = require("fs");
@@ -70,7 +66,7 @@ async function getSnapshotVersion() {
   }
   const time = new Date().toISOString().replace(/(\..*$)/g, '').replace(/([^\dT])/g, '').replace('T', '.');
 
-  return (await getVersion()) + '.' + time + '.' + commit;
+  return (await getVersion()) + '-' + time + '.' + commit;
 }
 
 console.log(`Current directory: ${process.cwd()}`);
@@ -110,11 +106,17 @@ const run = async () => {
     newVersion = await getSnapshotVersion();
   }
 
-  await setVersion(newVersion);
-
   console.log(`Publishing branch ${branch} with version=${newVersion} and tag=${npmTag || "<empty tag>"}`);
 
-  await publish(npmTag);
+  const extraTag = 'v' + (await getVersion());
+
+  console.log(`Extra tag=${extraTag}`);
+
+  await setVersion(newVersion);
+
+
+
+  await publish([npmTag, extraTag]);
 };
 
 run().catch(e => {
