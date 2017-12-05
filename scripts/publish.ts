@@ -60,13 +60,17 @@ async function getVersion() {
     throw new Error("Unable to parse semver from " + pkgJsonVersion);
   }
 
-  const commit = git.short();
+  return `${version.major}.${version.minor}.${version.patch}`;
+}
 
+async function getSnapshotVersion() {
+  const commit = git.short();
   if (!commit) {
     throw new Error("Unable to get git commit");
   }
+  const time = new Date().toISOString().replace(/(\..*$)/g, '').replace(/([^\dT])/g, '').replace('T', '.');
 
-  return `${version.major}.${version.minor}.${version.patch}-${git.short()}`;
+  return (await getVersion()) + '.' + time + '.' + commit;
 }
 
 console.log(`Current directory: ${process.cwd()}`);
@@ -79,8 +83,6 @@ const run = async () => {
 
   let gitTag: string = process.env.TRAVIS_TAG || null;
 
-  let latestVersion;
-
   let newVersion: string = null;
 
   console.log(`Using branch ${branch}`);
@@ -91,25 +93,26 @@ const run = async () => {
       // If the tags is a valid semver, we publish using that version and without any npmTag
       npmTag = null;
       newVersion = gitTag;
+    } else {
+      npmTag = 'tag-' + gitTag;
+      newVersion = await getSnapshotVersion();
     }
   } else if (branch === "master") {
     npmTag = "latest";
+    newVersion = await getSnapshotVersion();
   } else if (branch === "develop") {
     npmTag = "next";
+    newVersion = await getSnapshotVersion();
   } else if (branch.startsWith("dev-")) {
     npmTag = branch;
-  }
-
-  if (!newVersion) {
-    newVersion = await getVersion();
+    newVersion = await getSnapshotVersion();
+  } else {
+    newVersion = await getSnapshotVersion();
   }
 
   await setVersion(newVersion);
 
-  console.log(
-    `Publishing branch ${branch} with version=${newVersion} and tag=${npmTag ||
-    "<empty tag>"}`
-  );
+  console.log(`Publishing branch ${branch} with version=${newVersion} and tag=${npmTag || "<empty tag>"}`);
 
   await publish(npmTag);
 };
