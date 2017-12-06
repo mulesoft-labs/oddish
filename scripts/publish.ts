@@ -16,9 +16,10 @@ import git = require("git-rev-sync");
 
 async function execute(command): Promise<string> {
   return new Promise<string>((onSuccess, onError) => {
+    console.log(`Executing: '${command}'`);
     exec(command, (error, stdout, stderr) => {
-      stdout.length && console.log(stdout);
-      stderr.length && console.error(stderr);
+      stdout.trim().length && console.log('> ' + stdout.trim());
+      stderr.trim().length && console.error('! ' + stderr.trim());
 
       if (error) {
         onError(stderr);
@@ -35,18 +36,18 @@ async function getBranch(): Promise<string> {
 
 async function setVersion(newVersion: string): Promise<string> {
   return await execute(
-    `npm version ${newVersion} --force --no-git-tag-version --allow-same-version`
+    `npm version "${newVersion}" --force --no-git-tag-version --allow-same-version`
   );
 }
 
 async function publish(npmTag: string[] = []): Promise<string> {
-  return await execute(`npm publish` + npmTag.map($ => ' --tag=' + $).join(''));
+  return await execute(`npm publish` + npmTag.map($ => ' "--tag=' + $ + '"').join(''));
 }
 
 import fs = require("fs");
 
 async function getVersion() {
-  const json = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+  const json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
   const pkgJsonVersion = json.version;
 
@@ -93,17 +94,16 @@ const run = async () => {
       npmTag = 'tag-' + gitTag;
       newVersion = await getSnapshotVersion();
     }
-  } else if (branch === "master") {
-    npmTag = "latest";
-    newVersion = await getSnapshotVersion();
-  } else if (branch === "develop") {
-    npmTag = "next";
-    newVersion = await getSnapshotVersion();
-  } else if (branch.startsWith("dev-")) {
-    npmTag = branch;
-    newVersion = await getSnapshotVersion();
   } else {
     newVersion = await getSnapshotVersion();
+
+    if (branch === "master") {
+      npmTag = "latest";
+    } else if (branch === "develop") {
+      npmTag = "next";
+    } else if (branch.startsWith("dev-")) {
+      npmTag = branch;
+    }
   }
 
   console.log(`Publishing branch ${branch} with version=${newVersion} and tag=${npmTag || "<empty tag>"}`);
@@ -121,7 +121,7 @@ const run = async () => {
     const repoName = (await execute('npm v . name')).trim();
     const extraTag = (npmTag ? 'latest-' : 'stable-') + (await getVersion());
     console.log(`Add dist tag ${extraTag} -> ${repoName}@${newVersion}`);
-    await execute(`npm dist-tag add ${repoName}@${newVersion} ${extraTag}`);
+    await execute(`npm dist-tag add "${repoName}@${newVersion}" "${extraTag}"`);
   } catch (e) {
     console.error('Error setting extra npm dist-tag');
     console.error(e);
