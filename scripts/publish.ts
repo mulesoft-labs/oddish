@@ -16,10 +16,10 @@ import git = require("git-rev-sync");
 
 async function execute(command): Promise<string> {
   return new Promise<string>((onSuccess, onError) => {
-    console.log(`Executing: '${command}'`);
+    console.log(`> ${command}`);
     exec(command, (error, stdout, stderr) => {
-      stdout.trim().length && console.log('> ' + stdout.trim());
-      stderr.trim().length && console.error('! ' + stderr.trim());
+      stdout.trim().length && console.log('  ' + stdout.replace(/\n/g, '\n  '));
+      stderr.trim().length && console.error('! ' + stderr.replace(/\n/g, '\n  '));
 
       if (error) {
         onError(stderr);
@@ -120,7 +120,6 @@ const run = async () => {
   try {
     const repoName = (await execute('npm v . name')).trim();
     const extraTag = (npmTag ? 'latest-' : 'stable-') + (await getVersion());
-    console.log(`Add dist tag ${extraTag} -> ${repoName}@${newVersion}`);
     await execute(`npm dist-tag add "${repoName}@${newVersion}" "${extraTag}"`);
   } catch (e) {
     console.error('Error setting extra npm dist-tag');

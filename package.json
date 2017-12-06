@@ -1,6 +1,6 @@
 {
   "name": "oddish",
-  "version": "1.1.0-20171206.142956.c25cb0f",
+  "version": "1.1.0-20171206.143703.efa34bb",
   "description": "scripts that make your life easier",
   "bin": {
     "oddish": "./scripts/publish.js"
