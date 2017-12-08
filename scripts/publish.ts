@@ -67,7 +67,7 @@ async function getSnapshotVersion() {
   }
   const time = new Date().toISOString().replace(/(\..*$)/g, '').replace(/([^\dT])/g, '').replace('T', '.');
 
-  return (await getVersion()) + '-' + time + '.' + commit;
+  return (await getVersion()) + '-' + time + '.commit-' + commit;
 }
 
 console.log(`Current directory: ${process.cwd()}`);
