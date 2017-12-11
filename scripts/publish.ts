@@ -3,6 +3,8 @@ import { exec } from "child_process";
 import semver = require("semver");
 import git = require("git-rev-sync");
 
+console.log(`> oddish`);
+
 /**
  * Use cases
  *
@@ -70,7 +72,7 @@ async function getSnapshotVersion() {
   return (await getVersion()) + '-' + time + '.commit-' + commit;
 }
 
-console.log(`Current directory: ${process.cwd()}`);
+console.log(`  pwd: ${process.cwd()}`);
 
 const run = async () => {
   let branch =
@@ -82,7 +84,7 @@ const run = async () => {
 
   let newVersion: string = null;
 
-  console.log(`Using branch ${branch}`);
+  console.log(`  branch: ${branch}`);
 
   // Travis keeps the branch name in the tags' builds
   if (gitTag) {
@@ -98,18 +100,17 @@ const run = async () => {
     newVersion = await getSnapshotVersion();
 
     if (branch === "master") {
-      npmTag = "latest";
+      npmTag = "beta-" + (await getVersion());
     } else if (branch === "develop") {
-      npmTag = "next";
+      npmTag = "alpha" + (await getVersion());
     } else if (branch.startsWith("dev-")) {
-      npmTag = branch;
+      npmTag = branch + "-branch" + (await getVersion());
     }
   }
-
-  console.log(`Publishing branch ${branch} with version=${newVersion} and tag=${npmTag || "<empty tag>"}`);
+  console.log(`  currentVersion: ${await getVersion()}`);
+  console.log(`  publishing:\n    version: ${newVersion}\n    tag: ${npmTag || "<empty tag>"}\n`);
 
   await setVersion(newVersion);
-
 
   if (npmTag) {
     await publish([npmTag]);
@@ -117,14 +118,7 @@ const run = async () => {
     await publish();
   }
 
-  try {
-    const repoName = (await execute('npm v . name')).trim();
-    const extraTag = (gitTag ? 'stable-' : 'latest-') + (await getVersion());
-    await execute(`npm dist-tag add "${repoName}@${newVersion}" "${extraTag}"`);
-  } catch (e) {
-    console.error('Error setting extra npm dist-tag');
-    console.error(e);
-  }
+  await execute(`npm info . dist-tags`);
 };
 
 run().catch(e => {
