@@ -41,5 +41,12 @@ after_success:
 
 ## How it works
 
-oddish will take your branch name and depending on it will create a tag, `develop` and `master` are being mapped to `next` and `latest` respectively. The version will be incremented by `prerelease` from latest version associated with that tag and publish this to NPM. If there is no version associated with the tag, the version of your package.json will be taken as base. 
+oddish will:
+
+- Publish in `latest` on git tags, also in `latest-x.x.x`
+- Publish in `latest-x.x.x` if and only if you did not publish any greather version in that tag
+
+That makes things simpler, you will end up installing `npm i my-pkg@latest-2.1.0`, that package will contain the latest 2.1.0 version. And if exist, the stable version.
+
+Once a stable version is published to a tag, oddish will not touch that tag again.
 
