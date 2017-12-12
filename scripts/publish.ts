@@ -94,6 +94,8 @@ const run = async () => {
 
   let newVersion: string = null;
 
+  let linkLatest = false;
+
   console.log(`  branch: ${branch}`);
 
   // Travis keeps the branch name in the tags' builds
@@ -101,6 +103,7 @@ const run = async () => {
     if (semver.valid(gitTag)) {
       // If the tags is a valid semver, we publish using that version and without any npmTag
       npmTag = "latest-" + (await getVersion());
+      linkLatest = true;
       newVersion = gitTag;
     } else {
       npmTag = 'tag-' + gitTag;
@@ -143,7 +146,7 @@ const run = async () => {
     await publish(['ci']);
   }
 
-  if (newVersion == gitTag) {
+  if (linkLatest) {
     try {
       if (!tags.latest || semver.gte(newVersion, tags.latest)) {
         const pkgName = (await execute(`npm info . name`)).trim();
