@@ -62,6 +62,8 @@ async function getVersion() {
   return `${version.major}.${version.minor}.${version.patch}`;
 }
 
+
+
 async function getSnapshotVersion() {
   const commit = git.short();
   if (!commit) {
@@ -139,6 +141,17 @@ const run = async () => {
     await publish([npmTag]);
   } else {
     await publish(['ci']);
+  }
+
+  if (newVersion == gitTag) {
+    try {
+      if (!tags.latest || semver.gte(newVersion, tags.latest)) {
+        const pkgName = (await execute(`npm info . name`)).trim();
+        await execute(`npm dist-tag add ${pkgName}@${newVersion} latest`);
+      }
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   await execute(`npm info . dist-tags --json`);
