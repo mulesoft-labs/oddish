@@ -103,7 +103,7 @@ const run = async () => {
       npmTag = "beta-" + (await getVersion());
     } else if (branch === "develop") {
       npmTag = "alpha" + (await getVersion());
-    } else if (branch.startsWith("dev-")) {
+    } else {
       npmTag = branch + "-branch" + (await getVersion());
     }
   }
