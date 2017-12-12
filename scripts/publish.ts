@@ -72,6 +72,14 @@ async function getSnapshotVersion() {
   return (await getVersion()) + '-' + time + '.commit-' + commit;
 }
 
+async function getReleaseTags() {
+  try {
+    return JSON.parse(await execute('npm info . dist-tags --json'));
+  } catch {
+    return {};
+  }
+}
+
 console.log(`  pwd: ${process.cwd()}`);
 
 const run = async () => {
@@ -90,7 +98,7 @@ const run = async () => {
   if (gitTag) {
     if (semver.valid(gitTag)) {
       // If the tags is a valid semver, we publish using that version and without any npmTag
-      npmTag = null;
+      npmTag = "latest-" + (await getVersion());
       newVersion = gitTag;
     } else {
       npmTag = 'tag-' + gitTag;
@@ -100,25 +108,40 @@ const run = async () => {
     newVersion = await getSnapshotVersion();
 
     if (branch === "master") {
-      npmTag = "beta-" + (await getVersion());
+      npmTag = "latest-" + (await getVersion());
     } else if (branch === "develop") {
-      npmTag = "alpha" + (await getVersion());
+      npmTag = "latest-" + (await getVersion());
     } else {
-      npmTag = branch + "-branch" + (await getVersion());
+      npmTag = "branch-" + branch + (await getVersion());
     }
   }
+
   console.log(`  currentVersion: ${await getVersion()}`);
-  console.log(`  publishing:\n    version: ${newVersion}\n    tag: ${npmTag || "<empty tag>"}\n`);
+  console.log(`  publishing:\n    version: ${newVersion}`);
+
+
+
+  console.log(`    tag: ${npmTag || "ci"}\n`);
+
+
+  const tags = await getReleaseTags();
+
+  if (npmTag && (npmTag in tags)) {
+    if (semver.gte(tags[npmTag], newVersion)) {
+      console.log(`! This version will be not published as "${npmTag}" because a newer version is set. Publishing as "ci"\n`);
+      npmTag = null;
+    }
+  }
 
   await setVersion(newVersion);
 
   if (npmTag) {
     await publish([npmTag]);
   } else {
-    await publish();
+    await publish(['ci']);
   }
 
-  await execute(`npm info . dist-tags`);
+  await execute(`npm info . dist-tags --json`);
 };
 
 run().catch(e => {

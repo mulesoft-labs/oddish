@@ -1,6 +1,6 @@
 {
   "name": "oddish",
-  "version": "1.2.0",
+  "version": "1.2.0-20171212.212304.commit-1f6b673",
   "description": "scripts that make your life easier",
   "bin": {
     "oddish": "./scripts/publish.js"
