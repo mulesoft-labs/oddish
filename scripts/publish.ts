@@ -69,7 +69,7 @@ async function getSnapshotVersion() {
   if (!commit) {
     throw new Error("Unable to get git commit");
   }
-  const time = new Date().toISOString().replace(/(\..*$)/g, '').replace(/([^\dT])/g, '').replace('T', '.');
+  const time = new Date().toISOString().replace(/(\..*$)/g, '').replace(/([^\dT])/g, '').replace('T', '');
 
   return (await getVersion()) + '-' + time + '.commit-' + commit;
 }
